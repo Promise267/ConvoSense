@@ -1,7 +1,21 @@
 import React from 'react'
+import {Route, Routes} from "react-router-dom"
+import Login from './components/Login/Login'
+import Home from "./components/Home/Home"
+import Register from "./components/Register/Register"
+import Feature from './components/Navbar/Feature'
+import About from './components/Navbar/About'
 
 export default function App() {
   return (
-    <div>App</div>
+    <>
+      <Routes>
+        <Route path='/login' element = {<Login/>}/>
+        <Route path='/register' element = {<Register/>}/>
+        <Route path='/home' element = {<Home/>}/>
+        <Route path='/features' element = {<Feature/>}/>
+        <Route path='/about' element = {<About/>}/>
+      </Routes>
+    </>
   )
 }
