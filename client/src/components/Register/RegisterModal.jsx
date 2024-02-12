@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
+import axios from "axios"
 import {Link} from "react-router-dom"
 import {ToastContainer, toast} from 'react-toastify';
 import {useDispatch} from "react-redux"
@@ -57,7 +58,8 @@ export default function RegisterModal(props) {
             creds.confirmPassword !== "" &&
             isChecked == true
             ){
-                const serializableDate = dateofbirth instanceof Date ? dateofbirth.getTime() : null;
+                const dob = new Date(dateofbirth);
+                const dobFormatted = `${dob.getFullYear()}-${dob.getMonth() + 1}-${dob.getDate()}`;
                 dispatch(
                     addCredentials({
                         firstName : creds.firstName,
@@ -68,17 +70,33 @@ export default function RegisterModal(props) {
                         confirmPassword : creds.confirmPassword,
                         dialCode : dialCode,
                         phoneNumber : phoneNumber,
-                        dateofbirth : serializableDate,
+                        dateofbirth : dobFormatted,
                         isChecked : isChecked
                     }
                     ))
                 setShowIndicator(false);
+                sendVerificationCode();
                 props.onFormFillUpComplete()
             }
         else{
             setShowIndicator(true)
             toast.warn('Please enter the fields');
         }
+    }
+
+    const sendVerificationCode = async() => {
+        const url = `${import.meta.env.VITE_BACKEND_URI}` + "/sendVerificationCode"
+        await axios.post(url, {phoneNumber,dialCode}).then((result) => {
+            if(result.status === 200){
+                console.log("Successfully sent");
+            }
+            else{
+                console.log("PhoneNumber was unable to be send");
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+
     }
 
 
@@ -160,10 +178,9 @@ export default function RegisterModal(props) {
                                         name: 'phone',
                                         required: true,
                                     }}
-                                    value={phoneNumber}
                                     onChange={(value, country, event, formattedValue) => {
-                                        setDialCode(country.dialCode)
-                                        const extractedPhoneNumber = formattedValue.replace(value?.dialCode, '');
+                                        setDialCode(`+${country.dialCode}`)
+                                        const extractedPhoneNumber = value.slice(country.dialCode.length);
                                         setPhoneNumber(extractedPhoneNumber);
                                     }}
                                 />

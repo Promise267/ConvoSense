@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import axios from 'axios';
 import ConveSenseImage from "../../assets/convoSense.png"
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
@@ -19,15 +20,41 @@ export default function VerifyRegister() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(code !== ""){
-      console.log("im here");
-      return navigate("/home");
-    }
-    else{
-      toast.warn("Enter the OTP");
-      setShowIndicator(true);
-    }
+    const url = `${import.meta.env.VITE_BACKEND_URI}` + "/verifyCode"
+    axios.post(url, {code, phoneNumber : getCredentials.phoneNumber}).then((result) => {
+      if(result){
+        handleCodeSuccess();
+        navigate(`${result.data.redirect}`);
+      }
+    }).catch((err) => {
+      if (err.response && err.response.status === 409) {
+          toast.info(`${err.response.data.message}`);
+      } else if(err.response && err.response.status === 403) {
+          toast.info(`${err.response.data.message}`);
+      }
+    });
   };
+
+  const handleCodeSuccess = () => {
+    const url = `${import.meta.env.VITE_BACKEND_URI}` + "/user/postUser"
+    axios.post(url, {
+      firstName: getCredentials.firstName,
+      lastName: getCredentials.lastName,
+      gender: getCredentials.gender,
+      email: getCredentials.email,
+      password: getCredentials.password,
+      dialCode: getCredentials.dialCode,
+      phoneNumber: getCredentials.phoneNumber,
+      dateofbirth: getCredentials.dateofbirth
+    }).then((result) => {
+      if(result){
+        result.json({message : "User added successfully"})
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
 
   return (
     <>
