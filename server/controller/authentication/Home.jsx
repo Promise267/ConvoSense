@@ -2,46 +2,33 @@ import axios from 'axios'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import {ToastContainer, toast} from 'react-toastify';
-import React, { useEffect, useRef, useMemo, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import Sidebar from "./Sidebar"
 import ChatList from './ChatList'
 import ChatWindow from "./ChatWindow"
 import 'react-toastify/dist/ReactToastify.css';
-import Cookies from 'js-cookie';
 
 export default function Home() {
-  let showComponent = useRef(false);
+  const getCredential = useSelector(state => state.credential);
   const navigate = useNavigate();
-  const getTokenFromBrowser = Cookies.get("accessToken")
-  const getToken = useSelector(state => state.authentication);
-  const getCredential = useSelector(state => state.persistReducerdReducer.credential);
+  let showComponent = useRef(false);
 
-
-  const handleCookieValidity = async () => {
-    const url = `${import.meta.env.VITE_BACKEND_URI}/verifyToken`;
-    
-    try {
-      await axios.get(url, {
-        withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken.token || getTokenFromBrowser}`
-        },
-        data : {
-          phoneNumber : getCredential.phoneNumber
-        }
-      });
-
-    } catch (err) {
-      console.error(err);
-      console.log("im here");
-      navigate(`${err.response.data.redirect}`);
-    }
+  const handleCookieValidity = async() => {
+    const url = `${import.meta.env.VITE_BACKEND_URI}` + "/verifyToken"
+    axios.get(url,{withCredentials : true}).then((result) => {
+      if(result){
+        console.log(result);
+        showComponent = true
+      }
+    }).catch((err) => {
+      //console.log(`${err.response.data.message}`);
+      //navigate(`${err.response.data.redirect}`);
+    });
   }
 
   useEffect(()=>{
-    if(!getTokenFromBrowser)
     handleCookieValidity();
-  },[getCredential.phoneNumber, getCredential.token, navigate, getToken])
+  },[])
 
 
   return (

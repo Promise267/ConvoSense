@@ -1,9 +1,9 @@
 require("dotenv").config()
-const User = require("../model/user");
+const User = require("../../model/user");
 const accountSid = process.env.ACCOUNT_SID
 const authToken = process.env.AUTH_TOKEN
 const client = require('twilio')(accountSid, authToken);
-const verificationCode = require("../services/codeGenerator");
+let verificationCode = require("../../services/codeGenerator");
 
 const sendVerificationCode = async(req, res)=>{
     const {dialCode, phoneNumber} = req.body
@@ -31,9 +31,9 @@ const verifyCode = async(req, res) => {
             }
             else{
                 if (parseInt(code) === verificationCode) {
-                    return res.status(200).json({ message: 'Verification successful', redirect: '/home' });
+                    return res.status(200).json({ message: 'Verification successful'});
                 } else {
-                    return res.status(401).json({ message: 'Verification failed. Please try again.', actualCode : `${verificationCode}`, enteredCode : `${code}` });
+                    return res.status(401).json({ message: 'Verification failed. Please try again.'});
                 }
             }
         }).catch((err) => {

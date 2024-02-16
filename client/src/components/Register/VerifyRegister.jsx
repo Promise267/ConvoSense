@@ -1,10 +1,11 @@
 import React, {useState} from 'react'
 import axios from 'axios';
 import ConveSenseImage from "../../assets/convoSense.png"
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import FieldIndicators from '../Indicators/FieldIndicators';
 import { useNavigate } from 'react-router-dom';
+import { addToken } from "../../redux/authentication/authenticationSlice"
 import 'react-toastify/dist/ReactToastify.css';
 export default function VerifyRegister() {
   
@@ -12,19 +13,19 @@ export default function VerifyRegister() {
   const [code, setCode] = useState('');
   const [showIndicator, setShowIndicator] = useState(false)
   const navigate = useNavigate();
-
-  const handleCodeResend = (e) => {
-    e.preventDefault();
-    toast.info(`Code sent to the Phone Number ${getCredentials.phoneNumber}`)
-  }
-
+  const dispatch = useDispatch();
+  
   const handleSubmit = (e) => {
     e.preventDefault();
+    handleSendCode(e);
+  }
+
+  const handleSendCode = async(e) =>{
+    e.preventDefault();
     const url = `${import.meta.env.VITE_BACKEND_URI}` + "/verifyCode"
-    axios.post(url, {code, phoneNumber : getCredentials.phoneNumber}).then((result) => {
+    await axios.post(url, {code, phoneNumber : getCredentials.phoneNumber}).then((result) => {
       if(result){
         handleCodeSuccess();
-        navigate(`${result.data.redirect}`);
       }
     }).catch((err) => {
       if (err.response && err.response.status === 409) {
@@ -33,11 +34,11 @@ export default function VerifyRegister() {
           toast.info(`${err.response.data.message}`);
       }
     });
-  };
+  }
 
-  const handleCodeSuccess = () => {
-    const url = `${import.meta.env.VITE_BACKEND_URI}` + "/user/postUser"
-    axios.post(url, {
+  const handleCodeSuccess = async(e) => {
+    const url = `${import.meta.env.VITE_BACKEND_URI}` + "/auth/postUser"
+    await axios.post(url, {
       firstName: getCredentials.firstName,
       lastName: getCredentials.lastName,
       gender: getCredentials.gender,
@@ -48,12 +49,34 @@ export default function VerifyRegister() {
       dateofbirth: getCredentials.dateofbirth
     }).then((result) => {
       if(result){
-        result.json({message : "User added successfully"})
+        handleGetToken();
       }
     }).catch((err) => {
       console.log(err);
     });
   }
+
+  const handleGetToken = async () => {
+    const url = `${import.meta.env.VITE_BACKEND_URI}/sendToken`;
+    try {
+        const result = await axios.post(url, { phoneNumber:getCredentials.phoneNumber }, { withCredentials: true });
+        if (result) {
+            dispatch(addToken(
+                { token : result.data.accessToken }));
+            navigate(result.data.redirect);
+        }
+    } catch (err) {
+        console.error(err);
+    }
+};
+
+  const handleCodeResend = (e) => {
+    e.preventDefault();
+    handleSendCode();
+    toast.info(`Code sent to the Phone Number ${getCredentials.dialCode + getCredentials.phoneNumber}`)
+  }
+
+
 
 
   return (
@@ -78,7 +101,7 @@ export default function VerifyRegister() {
                         Verify Your Account
                     </h1>
                     <div>
-                      <p className="text-xs text-center">An OTP has been sent to the Phone Number {getCredentials.phoneNumber}</p>
+                      <p className="text-xs text-center">An OTP has been sent to the Phone Number {`${getCredentials.dialCode + getCredentials.phoneNumber}`}</p>
                     </div>
                     <form className="space-y-2" onSubmit={handleSubmit}>
                         <div>
