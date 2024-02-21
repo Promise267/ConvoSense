@@ -20,6 +20,6 @@ const persistReducerdReducer = persistReducer(persistConfig, reducer)
 export const store = configureStore({
     reducer: {
         persistReducerdReducer,
-        authentication: authenticationSlice
+        authentication: authenticationSlice,
     }
 });

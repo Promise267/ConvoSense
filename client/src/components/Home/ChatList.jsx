@@ -8,17 +8,17 @@ export default function ChatList() {
         <div className="w-full">
             <Searchbar/>
         </div>
-        <div className="bg-red-200 rounded-sm h-dvh w-full">
+        <div className="bg-gray-50 rounded-sm h-dvh w-full">
 
-            <div className="bg-green-200 m-2 p-6">
+            <div className="bg-gray-300 m-2 p-6 rounded-md">
                 P1
             </div>
 
-            <div className="bg-green-200 m-2 p-6">
+            <div className="bg-gray-300 m-2 p-6 rounded-md">
                 P2
             </div>
 
-            <div className="bg-green-200 m-2 p-6">
+            <div className="bg-gray-300 m-2 p-6 rounded-md">
                 P3
             </div>
         </div>

@@ -63,7 +63,7 @@ export default function VerifyRegister() {
         if (result) {
             dispatch(addToken(
                 { token : result.data.accessToken }));
-            navigate(result.data.redirect);
+                navigate(`${result.data.redirect}/messages`);
         }
     } catch (err) {
         console.error(err);

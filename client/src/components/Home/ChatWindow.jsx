@@ -7,7 +7,7 @@ export default function ChatWindow() {
   return (
     <>
     <div className="flex flex-col h-screen">
-        <div className="bg-purple-100">
+        <div className="bg-customGradient">
             <ChatRoomInfo/>
         </div>
         <div className="h-dvh bg-gray-300">

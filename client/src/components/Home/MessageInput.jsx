@@ -3,7 +3,7 @@ import React from 'react'
 export default function MessageInput() {
   return (
     <>
-    <div classNameName="">
+    <div className="">
       <div className="relative">
         <input
           type="text"
