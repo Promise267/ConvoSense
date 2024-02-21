@@ -6,8 +6,13 @@ import React, { useEffect, useRef, useMemo, useState } from 'react'
 import Sidebar from "./Sidebar"
 import ChatList from './ChatList'
 import ChatWindow from "./ChatWindow"
+import AddFriend from "./AddFriend"
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
+import Call from './Call';
+import Notification from './Notification';
+import Profile from './Profile';
+import { Routes, Route } from 'react-router';
 
 export default function Home() {
   let showComponent = useRef(false);
@@ -64,7 +69,13 @@ export default function Home() {
             <Sidebar />
           </div>
           <div className="w-1/4">
-            <ChatList />
+            <Routes>
+              <Route path="/messages" element={<ChatList />} />
+              <Route path="/calls" element={<Call />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/notifications" element={<Notification/>} />
+              <Route path="/addfriend" element={<AddFriend/>} />
+            </Routes>
           </div>
           <div className="flex-1">
             <ChatWindow />
