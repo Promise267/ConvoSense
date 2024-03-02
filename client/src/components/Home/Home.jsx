@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import {ToastContainer, toast} from 'react-toastify';
 import React, { useEffect, useRef, useMemo, useState } from 'react'
@@ -13,18 +13,19 @@ import Call from './Call';
 import Notification from './Notification';
 import Profile from './Profile';
 import { Routes, Route } from 'react-router';
+import { addCredentials } from '../../redux/verification/credentialSlice';
 
 export default function Home() {
   let showComponent = useRef(false);
   const navigate = useNavigate();
   const getTokenFromBrowser = Cookies.get("accessToken")
   const getToken = useSelector(state => state.authentication);
-  const getCredential = useSelector(state => state.persistReducerdReducer.credential);
+  const getCredential = useSelector(state => state.persistReducedReducer.credential);
+  const dispatch = useDispatch();
 
 
   const handleCookieValidity = async () => {
     const url = `${import.meta.env.VITE_BACKEND_URI}/verifyToken`;
-    
     try {
       await axios.get(url, {
         withCredentials: true,
@@ -73,7 +74,7 @@ export default function Home() {
               <Route path="/messages" element={<ChatList />} />
               <Route path="/calls" element={<Call />} />
               <Route path="/profile" element={<Profile />} />
-              <Route path="/notifications" element={<Notification/>} />
+              <Route path="/notifications" element={<Notification/>}/>
               <Route path="/addfriend" element={<AddFriend/>} />
             </Routes>
           </div>

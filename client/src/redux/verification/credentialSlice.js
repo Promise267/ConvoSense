@@ -18,7 +18,7 @@ export const credentialSlice = createSlice({
     initialState,
     reducers:{
         addCredentials : (state, action) => {
-            const { firstName, lastName, gender, email, password, confirmPassword, dialCode, phoneNumber, dateofbirth, isChecked } = action.payload;
+            const {firstName, lastName, gender, email, password, confirmPassword, dialCode, phoneNumber, dateofbirth, isChecked } = action.payload;
             state.firstName = firstName;
             state.lastName = lastName;
             state.gender = gender;

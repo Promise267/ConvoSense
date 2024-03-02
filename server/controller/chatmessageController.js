@@ -2,11 +2,11 @@ const ChatMessage = require("../model/chatMessage");
 
 module.exports = {
     POST : (req, res)=>{
-        const {chatrequestId, senderId, recieverId, message, imageURL, videoURL, fileURL, voiceMessageURL, timestamp} = req.body
+        const {chatrequestId, senderId, receiverId, message, imageURL, videoURL, fileURL, voiceMessageURL, timestamp} = req.body
         const newMessage = new ChatMessage({
             chatrequestId,
             senderId,
-            recieverId,
+            receiverId,
             message,
             imageURL,
             videoURL,

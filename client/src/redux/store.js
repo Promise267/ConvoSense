@@ -15,11 +15,11 @@ const reducer = combineReducers({
     credential: credentialSlice,
 })
 
-const persistReducerdReducer = persistReducer(persistConfig, reducer)
+const persistReducedReducer = persistReducer(persistConfig, reducer)
 
 export const store = configureStore({
     reducer: {
-        persistReducerdReducer,
+        persistReducedReducer,
         authentication: authenticationSlice,
     }
 });

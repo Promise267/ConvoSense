@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const chatRequestSchema = mongoose.Schema({
-    chatRequestId : {
+    chatrequestId : {
         type:mongoose.Schema.Types.ObjectId,
         ref : "ChatRequest",
         required : true
