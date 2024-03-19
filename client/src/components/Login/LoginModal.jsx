@@ -28,7 +28,7 @@ export default function LoginModal() {
             if (result) {
                 dispatch(addToken(
                     { token : result.data.accessToken }));
-                navigate(`${result.data.redirect}/messages`);
+                navigate(`${result.data.redirect}`);
             }
         } catch (err) {
             console.error(err);

@@ -1,13 +1,13 @@
 const mongoose = require("mongoose");
 
 const chatRequestSchema = mongoose.Schema({
-    senderId: {
-        type : mongoose.Schema.Types.ObjectId,
+    sender: {
+        type : mongoose.Schema.Types.Mixed,
         ref: 'Users',
         required : true
     },
-    receiverId: {
-        type : mongoose.Schema.Types.ObjectId,
+    receiver: {
+        type : mongoose.Schema.Types.Mixed,
         ref: 'Users',
         required : true
     },

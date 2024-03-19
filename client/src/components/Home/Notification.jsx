@@ -1,98 +1,89 @@
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
-export default function Notification() {
+export default function Notification({userId}) {
+  const [requests, setRequests] = useState([]);
 
-  const [chatrequests, setChatRequests] = useState([]);
-  const [chatRequestsUsers, setChatRequestsUser] = useState([]);
-  const [users, setUsers] = useState([]);
-  const [currentUser, setcurrentUser] = useState('')
-  const getCredential = useSelector(state => state.persistReducedReducer.credential);
-
-
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/user/getUser');
-        setUsers(response.data);
-      } catch (error) {
-        console.error('Error fetching users:', error);
-      }
-    };
-  
-    fetchUsers();
-  }, []);
-  
-  useEffect(() => {
-    if (users) {
-      const findCurrentUser = users.find((user) =>
-        user.phoneNumber === getCredential.phoneNumber
-      );
-      setcurrentUser(findCurrentUser);
-    }
-  }, [users, getCredential]);
-  
-  useEffect(() => {
-    const fetchChatRequests = async () => {
-      if (currentUser) {
-        try {
-          const response = await axios.post("http://localhost:5000/get-chat-request", { userId: currentUser._id })
-          setChatRequests(response.data)
-        } catch (error) {
-          console.error('Error fetching chat requests:', error);
-        }
-      }
-    };
-    
-    fetchChatRequests();
-  }, [currentUser]);
-
-  useEffect(() => {
-    if (chatrequests && users) {
-      const chatUsers = chatrequests.map(request => {
-        const user = users.find(u => u._id === request.senderId);
-        return { ...request, user };
+  const handleAcceptChatRequest = (id) => {
+    try {
+      axios.patch("http://localhost:5000/approve-chat-request", {chatrequestId : id, userId : userId}).then((result) => {
+        toast(result.data.message)
+        fetchSentChatRequest()
+      }).catch((err) => {
+        console.log(err);
       });
-      setChatRequestsUser(chatUsers); // Uncomment this line
+    } catch (error) {
+      console.log(error);
     }
-  }, [chatrequests, users]);
-
-
-  const handleAcceptChatRequest = () =>{
-
-  }
-
-  const handleRejectChatRequest = () =>{
-    
   }
 
 
+  const handleAcceptRejectRequest = async(id) => {
+    try {
+      await axios.delete('http://localhost:5000/delete-chat-request', {
+        data: {
+          chatrequestId: id,
+          userId: userId
+        }
+      })
+      .then(response => {
+        toast.success(response.data.message)
+        fetchSentChatRequest();
+        console.log(response);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  //console.log(chatRequestsUsers)
+
+
+  const fetchSentChatRequest = async() => {
+    try {
+      await axios.post("http://localhost:5000/get-chat-request", {userId : userId}).then((result) => {
+        setRequests(result.data)
+      }).catch((err) => {
+        console.log(err);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  useEffect(()=>{
+    if(userId){
+      fetchSentChatRequest();
+    }
+  },[userId])
   return (
-    <div className="text-black">
-      <div className="flex flex-col h-screen">
-        <div className="bg-gray-50 rounded-sm h-dvh w-full text-center text-gray-800">
-          {chatRequestsUsers.length > 0 && (
-            <div className="space-y-5">
-              {chatRequestsUsers.map((requests) => (
-                <div key={requests.user._id} className="bg-gray-200 m-2 p-6 rounded-md">
-                  <p className="text-sm"><span className="font-bold">{requests.user.dialCode} {requests.user.phoneNumber}</span> {requests.user.firstName} {requests.user.lastName} sent you a chat request!</p>
-                  <div className="flex flex-row justify-between mt-5 space-x-1">
-                    <button className="bg-gray-100 rounded-md w-full p-1 text-orange-500 transition-all hover:opacity-70 hover:duration-300" onClick={() => handleAcceptChatRequest(requests._id)}>
-                      Accept
-                    </button>
-                    <button className="bg-orange-500 rounded-md w-full p-1 text-white transition-all hover:opacity-70 hover:duration-300">
-                      Reject
-                    </button>
-                  </div>
-                </div>
-              ))}
+    <>
+    <div className="flex flex-col h-screen">
+      <div className="w-full">
+
+      </div>
+
+
+        <div className="bg-gray-50 rounded-sm h-dvh w-full">
+        {requests.map((request) => (
+          (request.receiver._id === userId && request.status === "pending") ? (
+            <div className="bg-gray-300 m-2 p-10 rounded-md text-center" key={request._id}>
+              <p className="text-sm"><span className="font-medium">{request.sender.dialCode} {request.sender.phoneNumber}</span> {request.sender.firstName} {request.sender.lastName} sent you a Chat Request</p>
+              <div className="flex flex-row justify-between mt-5 space-x-1">
+                <button className="bg-gray-100 rounded-md w-full p-1 text-orange-500 transition-all hover:opacity-70 hover:duration-300" onClick={() => handleAcceptChatRequest(request._id)}>
+                  Accept
+                </button>
+                <button className="bg-orange-500 rounded-md w-full p-1 text-white transition-all hover:opacity-70 hover:duration-300" onClick={() => handleAcceptRejectRequest(request._id)}>
+                  Reject
+                </button>
+              </div>
             </div>
-          )}
+          ) : null
+        ))}
         </div>
       </div>
-    </div>
-  );
+    </>
+  )
 }

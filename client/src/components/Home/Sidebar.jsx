@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 
 export default function Sidebar() {
     const initialState = [
-        { icon: faMessage, clicked: true, path: "messages" },
+        { icon: faMessage, clicked: false, path: "messages" },
         { icon: faPhone, clicked: false, path: "calls" },
         { icon: faUser, clicked: false, path: "profile" },
         { icon: faBell, clicked: false, path: "notifications" },

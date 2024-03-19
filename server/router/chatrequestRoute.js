@@ -2,6 +2,7 @@ const express = require("express");
 const chatrequestController = require("../controller/chatrequestController");
 const router = express.Router();
 
+router.get("/get-all-chat-requests", chatrequestController.GETAllChatRequests)
 router.post("/send-chat-request", chatrequestController.POSTChatRequest)
 router.post("/get-chat-request", chatrequestController.GETChatRequest)
 router.post("/get-sent-chat-request", chatrequestController.GETSentChatRequest)

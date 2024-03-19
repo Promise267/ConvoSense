@@ -34,7 +34,11 @@ const userSchema = mongoose.Schema({
     dateofbirth: {
         type : String,
         required : true
-    }
+    },
+    friends: [{
+        type: mongoose.Schema.Types.Mixed,
+        ref: 'Users'
+    }]
 })
 
 const User = mongoose.model("User", userSchema);

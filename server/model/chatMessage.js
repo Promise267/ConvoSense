@@ -1,42 +1,24 @@
 const mongoose = require("mongoose");
+const User = require("../model/user")
+const ChatModel = require("../model/chatModel");
 
-const chatRequestSchema = mongoose.Schema({
-    chatrequestId : {
-        type:mongoose.Schema.Types.ObjectId,
-        ref : "ChatRequest",
+const chatMessageSchema = mongoose.Schema({
+    sender: {
+        type : mongoose.Schema.Types.Mixed,
+        ref: 'Users',
         required : true
     },
-    senderId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
+    content : {
+        type : String,
         required : true
     },
-    receiverId : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
+    chatModel: {
+        type : mongoose.Schema.Types.Mixed,
+        ref: 'ChatModel',
         required : true
-    },
-    message: {
-        type: String,
-        required: true
-    },
-    imageUrl: {
-        type: String
-    },
-    videoUrl: {
-        type: String
-    },
-    fileUrl: {
-        type: String
-    },
-    voiceMessageUrl: {
-        type: String
-    },
-    timestamp : {
-        type: Date,
-        default: Date.now
-    }
-})
+    }},
+    {timestamps: true}
+)
 
-const ChatMessage = mongoose.model("ChatMessage", chatRequestSchema);
-module.exports = ChatMessage;
+const ChatMessage = mongoose.model("ChatMessage", chatMessageSchema)
+module.exports = ChatMessage

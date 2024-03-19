@@ -14,14 +14,54 @@ import Notification from './Notification';
 import Profile from './Profile';
 import { Routes, Route } from 'react-router';
 import { addCredentials } from '../../redux/verification/credentialSlice';
+import { addchatWindow } from '../../redux/chatWindow/chatWindowSlice';
 
 export default function Home() {
   let showComponent = useRef(false);
   const navigate = useNavigate();
+  const [userId, setUserId] = useState("");
   const getTokenFromBrowser = Cookies.get("accessToken")
   const getToken = useSelector(state => state.authentication);
+  const getchatWindow = useSelector(state => state.persistReducedReducer.chatWindow);
+  const isChatWindowEmpty = getchatWindow._id > 0;
   const getCredential = useSelector(state => state.persistReducedReducer.credential);
+  console.log(`chatWindow : ${getchatWindow._id}`);
   const dispatch = useDispatch();
+
+  const [friends, setFriends] = useState([]);
+  
+  const fetchFriends = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/get-all-chat-models");
+      const chatmodels = response.data;
+
+      // Initialize an array to store all friends with their chat model IDs
+      let allFriends = [];
+
+      // Iterate over each chatmodel to find friends
+      chatmodels.forEach(chatmodel => {
+        // Find the chatmodel containing the logged-in user
+        const userChatmodel = chatmodel.users.find(user => user._id === userId);
+        if (userChatmodel) {
+          // Exclude the current user's details from the chatmodel and store the rest
+          const otherUsers = chatmodel.users.filter(user => user._id !== userId);
+          // Store each friend along with their chat model ID
+          otherUsers.forEach(friend => {
+            allFriends.push({
+              chatModelId: chatmodel._id,
+              ...friend
+            });
+          });
+        }
+      });
+
+      // Set the friends state with unique friends
+      setFriends([...new Map(allFriends.map(user => [user._id, user])).values()]);
+    } catch (error) {
+      console.error("Error fetching friends:", error);
+    }
+  };
+
 
 
   const handleCookieValidity = async () => {
@@ -49,6 +89,30 @@ export default function Home() {
     handleCookieValidity();
   },[getCredential.phoneNumber, getCredential.token, navigate, getToken])
 
+  useEffect(() => {
+    const fetchUsers = () => {
+        const url = `${import.meta.env.VITE_BACKEND_URI}/user/getUser`;
+        try {
+            axios.get(url).then((result) => {
+                const user = result.data.find(u => u.phoneNumber === getCredential.phoneNumber)
+                setUserId(user._id);
+                fetchFriends(); // Call fetchFriends after userId is set
+            }).catch((err) => {
+                console.log(err);
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    fetchUsers();
+}, [getCredential.phoneNumber, userId]);
+
+  useEffect(()=>{
+    fetchFriends();
+}, [])
+
+
 
   return (
     <>
@@ -71,15 +135,15 @@ export default function Home() {
           </div>
           <div className="w-1/4">
             <Routes>
-              <Route path="/messages" element={<ChatList />} />
-              <Route path="/calls" element={<Call />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/notifications" element={<Notification/>}/>
-              <Route path="/addfriend" element={<AddFriend/>} />
+              <Route path="/messages" element={<ChatList userId = {userId} friends = {friends}/>}/>
+              <Route path="/calls" element={<Call userId = {userId}/>}/>
+              <Route path="/profile" element={<Profile userId = {userId}/>}/>
+              <Route path="/notifications" element={<Notification userId = {userId}/>}/>
+              <Route path="/addfriend" element={<AddFriend userId = {userId}/>}/>
             </Routes>
           </div>
           <div className="flex-1">
-            <ChatWindow />
+            {isChatWindowEmpty? "" : <ChatWindow/>}
           </div>
         </div>:
         ""
