@@ -6,15 +6,15 @@ const authMiddleware = async(req, res, next) =>{
     if(!token){
         res.status(401).json({message : "Unauthorized, Token not provided"})
     }
-    console.log(token);
+    //console.log(token);
     // Assuming token is in the format "Bearer <jwtToken>, Removing the "Bearer" prefix"
     const jwtToken = token.replace("Bearer", "").trim();
     
     try{
         const isVerified = jwt.verify(jwtToken, process.env.TOKEN_SECRET);
-        console.log("The phoneNumber" + isVerified.phoneNumber);
+        //console.log("The phoneNumber" + isVerified.phoneNumber);
         const userData = await User.findOne({phoneNumber : isVerified.phoneNumber})
-        console.log("I am User Data" + userData);
+        //console.log("I am User Data" + userData);
 
         req.phoneNumber = userData;
         req.token = token

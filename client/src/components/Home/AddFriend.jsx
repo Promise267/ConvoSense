@@ -106,7 +106,7 @@ export default function AddFriend({userId}) {
       />
       <div className="w-full">
         <form action="" onSubmit={handleAddRequest}>
-          <div className="flex flex-row space-x-2 p-2">
+          <div className="flex flex-row space-x-2 px-2">
               <div className="w-full">
                   <select
                       className="w-full p-1 leading-tight hover:shadow-lg transition duration-300 focus:outline-none"

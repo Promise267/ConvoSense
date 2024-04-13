@@ -48,7 +48,7 @@ export default function Camera() {
         const obj = await net.executeAsync(expanded)
         //console.log(await obj[7].array());
   
-        //boxes is
+        //boxes is 7
         //scores is 2
         //classes is 5
 
@@ -66,7 +66,7 @@ export default function Camera() {
         tf.dispose(expanded)
         tf.dispose(obj)
       } catch (error) {
-        //console.error('Error executing model:', error);
+        console.error('Error executing model:', error);
       }
     }
   };

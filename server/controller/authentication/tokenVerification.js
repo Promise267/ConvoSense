@@ -27,8 +27,8 @@ const verifyToken = (req, res, next) => {
     try {
         const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
         if(decodedToken) {
-            console.log(`Token = ${token}`);
-            console.log(phoneNumber);
+            //console.log(`Token = ${token}`);
+            //console.log(phoneNumber);
             return res.status(200).json({isValid: true, message : "User's token still exists"});
         }
     } catch (error) {

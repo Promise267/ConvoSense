@@ -4,16 +4,17 @@ import { addchatWindow } from '../../redux/chatWindow/chatWindowSlice';
 import axios from 'axios';
 import Searchbar from './Searchbar';
 
-export default function ChatList({userId, friends}) {
-    const [chat, setChat] = useState([]);
+export default function ChatList({ userId, friends, socket }) {
+    const [selectedChat, setSelectedChat] = useState(null); // State to keep track of selected chat
     const dispatch = useDispatch();
 
     const handleOnClickChat = (friend) => {
-        console.log(friend);
+        socket.emit("joinChat", friend.chatModelId)
         dispatch(
             addchatWindow({
-                chatModelId : friend.chatModelId,
-                _id : friend._id,
+                chatModelId: friend.chatModelId,
+                userId: userId,
+                friendId: friend._id,
                 firstName: friend.firstName,
                 lastName: friend.lastName,
                 email: friend.email,
@@ -22,7 +23,10 @@ export default function ChatList({userId, friends}) {
                 dateofbirth: friend.dateofbirth
             })
         );
-    }
+        setSelectedChat(friend.chatModelId, () => {
+            socket.emit("joinChat", friend.chatModelId); // Emit socket event after state update
+        });
+    };
 
     return (
         <div className="flex flex-col h-screen bg-gray-50">
@@ -30,14 +34,15 @@ export default function ChatList({userId, friends}) {
                 <Searchbar />
             </div>
             <div className="">
-                {friends.map((friend) =>(
-                    <div key={friend.chatModelId}
-                    className="bg-gray-200 m-2 p-12 text-gray-600 font-medium rounded-md cursor-pointer"
-                    onClick={() => handleOnClickChat(friend)}
+                {friends.map((friend) => (
+                    <div
+                        key={friend.chatModelId}
+                        className={`bg-gray-200 m-2 p-12 text-gray-600 font-medium rounded-md cursor-pointer ${selectedChat === friend.chatModelId ? 'bg-customGradient text-white' : ''}`} // Apply 'bg-blue-200' class if the chat is selected
+                        onClick={() => handleOnClickChat(friend)}
                     >
                         {friend.firstName}
                     </div>
-                ) )}
+                ))}
             </div>
         </div>
     );

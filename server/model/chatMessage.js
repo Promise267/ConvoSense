@@ -14,11 +14,11 @@ const chatMessageSchema = mongoose.Schema({
     },
     chatModel: {
         type : mongoose.Schema.Types.Mixed,
-        ref: 'ChatModel',
+        ref: 'ChatModels',
         required : true
     }},
     {timestamps: true}
 )
 
 const ChatMessage = mongoose.model("ChatMessage", chatMessageSchema)
-module.exports = ChatMessage
+module.exports = ChatMessage;

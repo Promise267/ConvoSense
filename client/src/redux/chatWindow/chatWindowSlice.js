@@ -17,9 +17,10 @@ export const chatWindowSlice = createSlice({
     initialState,
     reducers:{
         addchatWindow : (state, action) => {
-            const {chatModelId, _id, firstName, lastName, gender, email, dialCode, phoneNumber} = action.payload;
+            const {chatModelId, userId, friendId, firstName, lastName, gender, email, dialCode, phoneNumber} = action.payload;
             state.chatModelId = chatModelId
-            state._id = _id
+            state.userId = userId
+            state.friendId = friendId
             state.firstName = firstName;
             state.lastName = lastName;
             state.gender = gender;

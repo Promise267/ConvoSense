@@ -1,21 +1,21 @@
 const ChatMessage = require("../model/chatMessage");
+const User = require("../model/user");
+const ChatModel = require("../model/chatModel")
+
 
 module.exports = {
-    POST : (req, res)=>{
-        const {chatrequestId, senderId, receiverId, message, imageURL, videoURL, fileURL, voiceMessageURL, timestamp} = req.body
+    POSTChatMessage : async(req, res)=>{
+        const {senderId, content, chatmodelId} = req.body
+        const sender = await User.findById(senderId);
+        const chatModel = await ChatModel.findById(chatmodelId);
+
         const newMessage = new ChatMessage({
-            chatrequestId,
-            senderId,
-            receiverId,
-            message,
-            imageURL,
-            videoURL,
-            fileURL,
-            voiceMessageURL,
-            timestamp
+            sender : sender,
+            content,
+            chatModel : chatModel,
         })
 
-        newMessage.save().then((result) => {
+        await newMessage.save().then((result) => {
             res.send(result);
         }).catch((err) => {
             res.send(err)
@@ -23,18 +23,20 @@ module.exports = {
         });
     },
 
-    GET: (req, res) => {
-        const { senderId, receiverId } = req.body;
-        ChatMessage.find({
-            $or: [
-                { senderId: senderId, receiverId: receiverId },
-                { senderId: receiverId, receiverId: senderId }
-            ]
-        }).then((messages) => {
-            res.json(messages);
-        }).catch((err) => {
-            res.send(err);
+    GETChatMessage: async(req, res) => {
+        const { chatmodelId } = req.body;
+        try {
+            const chatModel = await ChatModel.findById(chatmodelId)
+            console.log(chatModel._id);
+            await ChatMessage.find({'chatModel._id' : chatModel._id}).then((result) => {
+                res.send(result)
+                //console.log(result);
+            }).catch((err) => {
+                console.log(err);
+            });
+        } catch (err) {
             console.log(err);
-        });
+            res.status(500).json({ message: "Failed to fetch chat messages" });
+        }
     }
 }

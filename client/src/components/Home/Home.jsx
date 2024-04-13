@@ -13,9 +13,10 @@ import Call from './Call';
 import Notification from './Notification';
 import Profile from './Profile';
 import { Routes, Route } from 'react-router';
+import { io } from 'socket.io-client';
 import { addCredentials } from '../../redux/verification/credentialSlice';
 import { addchatWindow } from '../../redux/chatWindow/chatWindowSlice';
-
+const socket = io.connect("http://localhost:5000");
 export default function Home() {
   let showComponent = useRef(false);
   const navigate = useNavigate();
@@ -25,11 +26,11 @@ export default function Home() {
   const getchatWindow = useSelector(state => state.persistReducedReducer.chatWindow);
   const isChatWindowEmpty = getchatWindow._id > 0;
   const getCredential = useSelector(state => state.persistReducedReducer.credential);
-  console.log(`chatWindow : ${getchatWindow._id}`);
+  //console.log(`chatWindow : ${getchatWindow._id}`);
   const dispatch = useDispatch();
 
   const [friends, setFriends] = useState([]);
-  
+
   const fetchFriends = async () => {
     try {
       const response = await axios.get("http://localhost:5000/get-all-chat-models");
@@ -112,6 +113,17 @@ export default function Home() {
     fetchFriends();
 }, [])
 
+// useEffect(() => {
+//   // // Listen for the 'connected' event
+//   // socket.on('connected', (data) => {
+//   //     console.log('Connected to server:', data);
+//   // });
+
+//   // return () => {
+//   //     socket.disconnect();
+//   // };
+// }, []);
+
 
 
   return (
@@ -135,7 +147,7 @@ export default function Home() {
           </div>
           <div className="w-1/4">
             <Routes>
-              <Route path="/messages" element={<ChatList userId = {userId} friends = {friends}/>}/>
+              <Route path="/messages" element={<ChatList userId = {userId} friends = {friends} socket = {socket}/>}/>
               <Route path="/calls" element={<Call userId = {userId}/>}/>
               <Route path="/profile" element={<Profile userId = {userId}/>}/>
               <Route path="/notifications" element={<Notification userId = {userId}/>}/>
@@ -143,7 +155,7 @@ export default function Home() {
             </Routes>
           </div>
           <div className="flex-1">
-            {isChatWindowEmpty? "" : <ChatWindow/>}
+            {isChatWindowEmpty? "" : <ChatWindow socket = {socket}/>}
           </div>
         </div>:
         ""

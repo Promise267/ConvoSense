@@ -38,21 +38,28 @@ app.use("/", chatModelRouter)
 app.use("/", chatMessageRouter);
 
 
-io.on("connection", (socket) => {
-	socket.emit("me", socket.id)
+io.on('connection', (socket) => {
+    console.log('A user connected', socket.id);
 
-	socket.on("disconnect", () => {
-		socket.broadcast.emit("callEnded")
-	})
+    // Send a message to the frontend
+    socket.emit('connected', 'You are connected to the server');
 
-	socket.on("callUser", (data) => {
-		io.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
-	})
 
-	socket.on("answerCall", (data) => {
-		io.to(data.to).emit("callAccepted", data.signal)
-	})
-})
+    socket.on("joinChat", (chat) => {
+        socket.join(chat)
+        console.log(`User with ID : ${socket.id} joined room : ${chat}`);
+    })
+
+    socket.on("sendMessage", (messageData)=>{
+        socket.to(messageData.chatModelId).emit("receiverMessage", messageData)
+        console.log(messageData);
+    })
+
+    // Handle disconnection
+    socket.on('disconnect', () => {
+        console.log('A user disconnected');
+    });
+});
 
 
 server.listen(port, () => console.log(`Example app listening on port ${port}!`))

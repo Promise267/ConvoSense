@@ -10,5 +10,20 @@ module.exports = {
         }).catch((err) => {
             console.log(err);
         });
+    },
+
+    GETChatModel : (req, res) => {
+        const {chatmodelId} = req.body
+        try {
+            ChatModel.find({_id : chatmodelId}).then((result) => {
+                res.send(result)
+            }).catch((err) => {
+                console.log(err);
+                res.status(500).json({ message: "Failed to fetch chat requests" });
+            });
+        } catch (error) {
+            console.error(err);
+            res.status(500).json({message: "Internal Server Error"});
+        }
     }
 }

@@ -20,7 +20,7 @@ export default function Call() {
 
         <div className="flex flex-row mt-8 space-x-2 justify-center">
           <div>
-          <span class="material-symbols-outlined">
+          <span className="material-symbols-outlined">
             phone_forwarded
           </span>
           </div>
@@ -44,7 +44,7 @@ export default function Call() {
 
         <div className="flex flex-row mt-8 space-x-2 justify-center">
           <div>
-          <span class="material-symbols-outlined">
+          <span className="material-symbols-outlined">
             phone_callback
           </span>
           </div>
@@ -67,7 +67,7 @@ export default function Call() {
 
         <div className="flex flex-row mt-8 space-x-2 justify-center">
           <div>
-          <span class="material-symbols-outlined">
+          <span className="material-symbols-outlined">
             phone_missed
           </span>
           </div>
