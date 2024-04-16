@@ -13,9 +13,9 @@
   background-image: linear-gradient(to right,#ec4899, #a855f7, #3b82f6);
 }
 .scrollable-div {
-  /* Set a fixed height for the div */
-  max-height: 740px ; /* Example height, adjust as needed */
-
-  /* Enable scrolling */
-  overflow-y: auto; /* Vertical scrolling */
+  max-height: 740px ;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }

@@ -6,96 +6,60 @@ import {toggleCamera} from "../../redux/cameraStatus/cameraStatusSlice"
 import Peer from "simple-peer"
 import io from "socket.io-client"
 
-export default function ChatRoomInfo({chatModelId,firstName,lastName,dialCode,phoneNumber}) {
+export default function ChatRoomInfo({chatModelId,firstName,lastName,dialCode,phoneNumber,socket}) {
 
-  const socket = io.connect("http://localhost:5000")
-  const [ me, setMe ] = useState("")
-  const [ stream, setStream ] = useState()
-  const [ receivingCall, setReceivingCall ] = useState(false)
-  const [ caller, setCaller ] = useState("")
-  const [ callerSignal, setCallerSignal ] = useState()
-  const [ callAccepted, setCallAccepted ] = useState(false)
-  const [ idToCall, setIdToCall ] = useState("")
-  const [ callEnded, setCallEnded] = useState(false)
-  const [ name, setName ] = useState("")
-  const connectionRef= useRef()
   const dispatch = useDispatch();
-
+  const [myStream, setMyStream] = useState(null);
+  const myVideoRef = useRef();
 
   useEffect(() => {
-	socket.on("me", (id) => {
-			setMe(id)
-		})
 
-	socket.on("callUser", (data) => {
-		setReceivingCall(true)
-		setCaller(data.from)
-		setName(data.name)
-		setCallerSignal(data.signal)
-	})
-	}, [])
+      if (myStream && myVideoRef.current) { // Check if myVideoRef.current exists
+          myVideoRef.current.srcObject = myStream;
+      }
+  }, [myStream]);
 
-	const callUser = (id) => {
-		const peer = new Peer({
-			initiator: true,
-			trickle: false,
-			stream: stream
-		})
-		peer.on("signal", (data) => {
-			socket.emit("callUser", {
-				userToCall: id,
-				signalData: data,
-				from: me,
-				name: name
-			})
-		})
-		peer.on("stream", (stream) => {
-			
-				userVideo.current.srcObject = stream
-			
-		})
-		socket.on("callAccepted", (signal) => {
-			setCallAccepted(true)
-			peer.signal(signal)
-		})
+  const handleCallPerson = () => {
+    if (myStream) {
+          // Stop the tracks in the stream
+          myStream.getTracks().forEach(track => track.stop());
+          // Set myStream to null to indicate that the camera is off
+          setMyStream(null);
+          // Dispatch the action to toggle the camera
+          dispatch(toggleCamera());
+      } else {
+          // Turn on the camera
+          navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+              .then((stream) => {
+                  setMyStream(stream);
+                  dispatch(toggleCamera());
+                  if (socket) {
+                      const peer = new Peer({ initiator: true, stream: myStream });
 
-		connectionRef.current = peer
+                      peer.on('signal', (data) => {
+                          socket.emit('callUser', { userToCall: chatModelId, signalData: data });
+                      });
 
+                      socket.on('callAccepted', (signal) => {
+                          peer.signal(signal);
+                      });
 
-	}
-
-	const handleCallPerson = () => {
-		dispatch(
-			toggleCamera()
-		)
-
-	}
-
-	const answerCall =() =>  {
-		setCallAccepted(true)
-		const peer = new Peer({
-			initiator: false,
-			trickle: false,
-			stream: stream
-		})
-		peer.on("signal", (data) => {
-			socket.emit("answerCall", { signal: data, to: caller })
-		})
-		peer.on("stream", (stream) => {
-			userVideo.current.srcObject = stream
-		})
-
-		peer.signal(callerSignal)
-		connectionRef.current = peer
-	}
-
-	const leaveCall = () => {
-		setCallEnded(true)
-		connectionRef.current.destroy()
-	}
+                      peer.on('stream', (stream) => {
+                          const video = document.createElement('video');
+                          video.srcObject = stream;
+                          video.play();
+                          document.body.appendChild(video);
+                      });
+                  }
+              })
+              .catch((error) => {
+                  console.error('Error accessing media devices:', error);
+              });
+      }
+  };
 
 
-  
+
   return (
     <>
     <div className="flex justify-between items-center m-4">

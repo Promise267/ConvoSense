@@ -9,7 +9,7 @@ export default function ChatList({ userId, friends, socket }) {
     const dispatch = useDispatch();
 
     const handleOnClickChat = (friend) => {
-        socket.emit("joinChat", friend.chatModelId)
+        socket.emit("joinRoom", friend.chatModelId)
         dispatch(
             addchatWindow({
                 chatModelId: friend.chatModelId,
@@ -23,9 +23,7 @@ export default function ChatList({ userId, friends, socket }) {
                 dateofbirth: friend.dateofbirth
             })
         );
-        setSelectedChat(friend.chatModelId, () => {
-            socket.emit("joinChat", friend.chatModelId); // Emit socket event after state update
-        });
+        setSelectedChat(friend.chatModelId);
     };
 
     return (

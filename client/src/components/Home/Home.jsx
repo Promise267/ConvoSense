@@ -14,8 +14,7 @@ import Notification from './Notification';
 import Profile from './Profile';
 import { Routes, Route } from 'react-router';
 import { io } from 'socket.io-client';
-import { addCredentials } from '../../redux/verification/credentialSlice';
-import { addchatWindow } from '../../redux/chatWindow/chatWindowSlice';
+
 const socket = io.connect("http://localhost:5000");
 export default function Home() {
   let showComponent = useRef(false);
@@ -62,6 +61,13 @@ export default function Home() {
       console.error("Error fetching friends:", error);
     }
   };
+
+  useEffect(()=>{
+    socket.on("connect", ()=>{
+      console.log("Connected to socket.io server")
+    })
+  })
+
 
 
 
@@ -110,21 +116,9 @@ export default function Home() {
 }, [getCredential.phoneNumber, userId]);
 
   useEffect(()=>{
+    socket.emit("login");
     fetchFriends();
 }, [])
-
-// useEffect(() => {
-//   // // Listen for the 'connected' event
-//   // socket.on('connected', (data) => {
-//   //     console.log('Connected to server:', data);
-//   // });
-
-//   // return () => {
-//   //     socket.disconnect();
-//   // };
-// }, []);
-
-
 
   return (
     <>

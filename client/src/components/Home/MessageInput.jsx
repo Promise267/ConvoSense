@@ -10,7 +10,7 @@ export default function MessageInput({ chatModelId, userId, sendMessage, socket 
 
   const handleSendMessage = () => {
     if (message.trim() !== '') {
-      socket.emit("sendMessage", {message, chatModelId})
+      socket.emit("sendMessage", {roomId : chatModelId, senderId : userId, content : message, chatModelId : chatModelId})
       sendMessage(message);
       setMessage('');
       setFiles([]); // Clear selected files after sending message;
