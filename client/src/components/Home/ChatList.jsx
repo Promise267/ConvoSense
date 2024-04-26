@@ -9,7 +9,7 @@ export default function ChatList({ userId, friends, socket }) {
     const dispatch = useDispatch();
 
     const handleOnClickChat = (friend) => {
-        socket.emit("joinRoom", friend.chatModelId)
+        socket.emit("joinRoom", {userId : userId, chatModelId : friend.chatModelId})
         dispatch(
             addchatWindow({
                 chatModelId: friend.chatModelId,

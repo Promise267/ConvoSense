@@ -116,9 +116,9 @@ export default function Home() {
 }, [getCredential.phoneNumber, userId]);
 
   useEffect(()=>{
-    socket.emit("login");
+    socket.emit("login", { userId: userId} );
     fetchFriends();
-}, [])
+}, [userId])
 
   return (
     <>

@@ -27,7 +27,7 @@ module.exports = {
         const { chatmodelId } = req.body;
         try {
             const chatModel = await ChatModel.findById(chatmodelId)
-            console.log(chatModel._id);
+            //console.log(chatModel._id);
             await ChatMessage.find({'chatModel._id' : chatModel._id}).then((result) => {
                 res.send(result)
                 //console.log(result);

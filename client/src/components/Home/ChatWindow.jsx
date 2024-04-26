@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import axios from 'axios';
 
 export default function ChatWindow({ socket }) {
-  const getCameraStatus = useSelector(state => state.cameraStatus);
   const getchatWindow = useSelector(state => state.persistReducedReducer.chatWindow);
   const [messages, setMessages] = useState([]);
 
@@ -57,6 +56,7 @@ export default function ChatWindow({ socket }) {
         <div className="bg-orange-500">
           <ChatRoomInfo
             socket={socket}
+            friendId = {getchatWindow.friendId}
             chatModelId={getchatWindow.chatModelId}
             firstName={getchatWindow.firstName}
             lastName={getchatWindow.lastName}
@@ -65,9 +65,6 @@ export default function ChatWindow({ socket }) {
           />
         </div>
         <div className="h-dvh bg-gray-100">
-          {getCameraStatus.stateOfCamera ? (
-            <Camera />
-          ) : (
             <Message
               socket={socket}
               messages={messages}
@@ -79,7 +76,6 @@ export default function ChatWindow({ socket }) {
               dialCode={getchatWindow.dialCode}
               phoneNumber={getchatWindow.phoneNumber}
             />
-          )}
         </div>
         <div>
           <MessageInput

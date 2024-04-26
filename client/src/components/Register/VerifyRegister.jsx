@@ -9,7 +9,7 @@ import { addToken } from "../../redux/authentication/authenticationSlice"
 import 'react-toastify/dist/ReactToastify.css';
 export default function VerifyRegister() {
   
-  const getCredentials = useSelector(state => state.credential)
+  const getCredentials = useSelector(state => state.persistReducedReducer.credential)
   const [code, setCode] = useState('');
   const [showIndicator, setShowIndicator] = useState(false)
   const navigate = useNavigate();
