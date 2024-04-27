@@ -9,7 +9,6 @@ import ChatWindow from "./ChatWindow"
 import AddFriend from "./AddFriend"
 import 'react-toastify/dist/ReactToastify.css';
 import Cookies from 'js-cookie';
-import Call from './Call';
 import Notification from './Notification';
 import Profile from './Profile';
 import { Routes, Route } from 'react-router';
@@ -23,7 +22,7 @@ export default function Home() {
   const getTokenFromBrowser = Cookies.get("accessToken")
   const getToken = useSelector(state => state.authentication);
   const getchatWindow = useSelector(state => state.persistReducedReducer.chatWindow);
-  const isChatWindowEmpty = getchatWindow._id > 0;
+  const isChatWindowEmpty = getchatWindow.chatModelId > 0;
   const getCredential = useSelector(state => state.persistReducedReducer.credential);
   //console.log(`chatWindow : ${getchatWindow._id}`);
   const dispatch = useDispatch();
@@ -91,6 +90,7 @@ export default function Home() {
     }
   }
 
+
   useEffect(()=>{
     if(!getTokenFromBrowser)
     handleCookieValidity();
@@ -142,7 +142,6 @@ export default function Home() {
           <div className="w-1/4">
             <Routes>
               <Route path="/messages" element={<ChatList userId = {userId} friends = {friends} socket = {socket}/>}/>
-              <Route path="/calls" element={<Call userId = {userId}/>}/>
               <Route path="/profile" element={<Profile userId = {userId}/>}/>
               <Route path="/notifications" element={<Notification userId = {userId}/>}/>
               <Route path="/addfriend" element={<AddFriend userId = {userId}/>}/>

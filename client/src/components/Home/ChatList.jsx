@@ -29,7 +29,6 @@ export default function ChatList({ userId, friends, socket }) {
     return (
         <div className="flex flex-col h-screen bg-gray-50">
             <div className="w-full">
-                <Searchbar />
             </div>
             <div className="">
                 {friends.map((friend) => (

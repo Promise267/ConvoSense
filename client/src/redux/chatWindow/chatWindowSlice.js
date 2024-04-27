@@ -2,7 +2,7 @@ import {createSlice} from "@reduxjs/toolkit"
 
 const initialState = {
     chatModelId : "",
-    _id : "",
+    userId : "",
     firstName : "",
     lastName : "",
     gender : "",

@@ -35,8 +35,7 @@ app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json());
 
 app.use("/", userRouter);
-//dont uncomment this
-// app.use("/", smsVerificationRouter);
+app.use("/", smsVerificationRouter);
 app.use("/", authenticationRouter);
 app.use("/", tokenVerificationRouter);
 app.use("/", chatrequestRouter);
@@ -83,14 +82,6 @@ io.on("connection", (socket) => {
             console.log("callUser listeneer is being called");
             io.to(friendSocketId).emit("callUser", { from: from, signalData : signalData, name: name })
         }
-
-        // const { userToCall, from, name } = data;
-        // const friendSocketId = userSocketMap.get(userToCall);
-        // if(friendSocketId){
-        //     console.log(friendSocketId);
-        //     console.log("callUser listeneer is being called");
-        //     io.to(friendSocketId).emit("callUser", { from: from, name: name })
-        // }
 	})
 
 	socket.on("answerCall", (data) => {

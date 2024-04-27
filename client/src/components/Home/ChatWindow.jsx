@@ -53,9 +53,10 @@ export default function ChatWindow({ socket }) {
   return (
     <>
       <div className="flex flex-col h-screen">
-        <div className="bg-orange-500">
+        <div className="bg-gray-200">
           <ChatRoomInfo
             socket={socket}
+            userId={getchatWindow.userId}
             friendId = {getchatWindow.friendId}
             chatModelId={getchatWindow.chatModelId}
             firstName={getchatWindow.firstName}

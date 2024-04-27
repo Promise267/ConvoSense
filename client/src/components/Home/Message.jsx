@@ -15,7 +15,7 @@ export default function Message({ messages, userId, chatModelId, socket }) {
       {messages.map((message, index) => {
         const isSentByUser = message.sender && message.sender._id === userId;
         const messageClass = isSentByUser ? 'text-right' : 'text-left';
-        const backgroundColor = isSentByUser ? 'bg-customGradient text-white' : 'bg-gray-300';
+        const backgroundColor = isSentByUser ? 'bg-customGradient text-white' : 'bg-orange-500 text-gray-800';
 
         // Parse createdAt timestamp
         const createdAt = new Date(message.createdAt);
@@ -29,15 +29,17 @@ export default function Message({ messages, userId, chatModelId, socket }) {
                 <div>
                   {message.content}
                 </div>
-                  <button onClick={() => speakMessage(message.content)}>
-                    <FontAwesomeIcon icon={faVolumeHigh} />
-                  </button>
                 <div>
                 </div>
               </div>
             </div>
-            <div className="text-xs">
-              {day}, {time}
+            <div className="text-xs text-gray-600">
+              <div>
+                {day}, {time} &nbsp;
+                  <button onClick={() => speakMessage(message.content)}>
+                    <FontAwesomeIcon icon={faVolumeHigh} />
+                  </button>
+              </div>
             </div>
           </div>
         );

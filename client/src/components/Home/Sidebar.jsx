@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faPhone, faMessage, faBell, faImage, faGear, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { NavLink } from 'react-router-dom';
+import { faUser, faMessage, faBell, faImage, faGear, faPlus, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
+import {NavLink, useNavigate} from 'react-router-dom';
+import ConveSenseImage from "../../assets/convoSense.png"
+
 
 export default function Sidebar() {
     const initialState = [
         { icon: faMessage, clicked: false, path: "messages" },
-        { icon: faPhone, clicked: false, path: "calls" },
         { icon: faUser, clicked: false, path: "profile" },
         { icon: faBell, clicked: false, path: "notifications" },
-        {icon : faPlus, clicked : false, path : "addfriend"}
+        { icon : faPlus, clicked : false, path : "addfriend"}
     ];
 
     const [icons, setIcons] = useState(initialState);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const selectedIconIndex = localStorage.getItem('selectedIconIndex');
@@ -34,10 +36,15 @@ export default function Sidebar() {
         localStorage.setItem('selectedIconIndex', index);
     };
 
+    const handleLogout = () => {
+
+    }
+
     return (
         <>
             <div className="flex flex-col h-screen justify-between px-4">
                 <div className="first space-y-10">
+                    
                     {icons.map((item, index) => (
                         <div key={index} className={`flex flex-row m-3 mt-10 cursor-pointer`} onClick={() => handleIconClick(index)}>
                             <NavLink to={item.path}>
@@ -48,11 +55,14 @@ export default function Sidebar() {
                 </div>
                 <div className='second pt-10'>
                     <div className="m-3 mb-10 cursor-pointer">
-                        <FontAwesomeIcon icon={faImage} size='xl' style={{ color: "#9ca3af", }} />
+                        <button onClick={handleLogout}>
+                            <FontAwesomeIcon icon={faRightFromBracket} size='xl' style={{ color: "#9ca3af", }} />
+                        </button>
                     </div>
                     <div className="m-3 mb-10 cursor-pointer">
-                        <FontAwesomeIcon icon={faGear} size='xl' style={{ color: "#9ca3af", }} />
+                        <img className="w-9 h-10" src={ConveSenseImage} alt="logo"/>
                     </div>
+                    
                 </div>
             </div>
         </>

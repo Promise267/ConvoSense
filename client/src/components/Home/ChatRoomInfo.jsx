@@ -8,6 +8,7 @@ import ReactPlayer from "react-player";
 import * as webrtc from "../WebRTC/actions";
 import { configuration, setLocalStream, socketWebRTC } from "../WebRTC/globals";
 import { X } from "lucide-react";
+import ConveSenseImage from "../../assets/convoSense.png"
 import {
   remoteStream,
   setRemoteStream,
@@ -21,6 +22,7 @@ import {
   setPeerConnection,
   
 } from "../WebRTC/globals";
+import axios from "axios";
 
 export default function ChatRoomInfo({
   chatModelId,
@@ -30,6 +32,7 @@ export default function ChatRoomInfo({
   dialCode,
   phoneNumber,
   socket,
+  userId
 }) {
   const myVideo = useRef();
   const userVideo = useRef();
@@ -46,7 +49,6 @@ export default function ChatRoomInfo({
   const getCredential = useSelector(
     (state) => state.persistReducedReducer.credential
   );
-  const getCameraStatus = useSelector((state) => state.cameraStatus);
 
   // WEBRTC
 
@@ -99,6 +101,7 @@ export default function ChatRoomInfo({
   const accessCamera = async () => {
     await navigator.mediaDevices
       .getUserMedia({ video: true, audio: true })
+
       .then((stream) => {
         setStream(stream);
         setLocalStream(stream);
@@ -109,11 +112,14 @@ export default function ChatRoomInfo({
       });
   };
 
-  const OnClose = () => {
+
+
+
+  const OnClose = async() => {
     if(peerConnection && peerConnection.signalingState !== "closed"){
       peerConnection.close();
     }
-    
+
     emptyRemoteStream();
 
     setCallAccepted(false);
@@ -123,6 +129,7 @@ export default function ChatRoomInfo({
     setPeerConnection(null);
 
     emptyRemoteStream();
+
   };
 
   useEffect(() => {
@@ -172,50 +179,27 @@ export default function ChatRoomInfo({
     socket.emit("answerCall", { signal: { id: me }, to: caller });
 
     await startCallCaller(caller);
-  };
-
-  const leaveCall = () => {
-    setCallEnded(true);
-    connectionRef.current.destroy();
+    setStartTime(new Date());
   };
 
   return (
     <>
       <div className="flex justify-between items-center m-4">
         <div className="flex flex-col space-y-2">
-          <div className="flex flex-row justify-center items-center space-x-5 first">
-            <FontAwesomeIcon icon={faImage} size="2xl" />
-            <p className="font-medium">
+          <div className="flex flex-row justify-center items-center space-x-5 first text-gradient">
+            <p className="font-semibold text-2xl ">
               {firstName} {lastName}
             </p>
           </div>
           <div>
-            <p className="text-xs font-medium">
+            <p className="text-xs font-medium text-gradient">
               {dialCode} {phoneNumber}
             </p>
-            <p className="text-xs">Active Status</p>
           </div>
         </div>
 
         <div className="flex flex-row items-center space-x-4">
           <div className="col">
-            {!callAccepted ? (
-              <button onClick={callUser}>
-                <FontAwesomeIcon icon={faVideo} size="2xl" />
-              </button>
-            ) : (
-              <button
-                onClick={() => {
-                  OnClose();
-                  window.location.reload();
-                }}
-              >
-                <X size={24} /> {/*Cross Icon And Action */}
-              </button>
-            )}
-          </div>
-          <div className="col">
-          
             {remoteStream.length > 0 &&
               remoteStream.map((stream) => <Camera stream={stream} />)}
           </div>
@@ -225,14 +209,33 @@ export default function ChatRoomInfo({
           {receivingCall && !callAccepted ? (
             <div className="caller">
               <h1>{name} is calling...</h1>
-              <button className="bg-purple-400" onClick={() => {
-                answerCall();
-                answerCall();  //incase camera initialisation is failed
-              }}>
+              <button className="bg-customGradient p-2 rounded-md text-white" onClick={() => {
+                setTimeout(()=>{
+                  answerCall();
+                  answerCall();  //incase camera initialisation is failed
+                },5000)
+                }}>
                 Answer
               </button>
             </div>
           ) : null}
+        </div>
+        <div className="col">
+          {!callAccepted ? (
+            <button onClick={callUser}>
+              <FontAwesomeIcon icon={faVideo} size="2xl"  style={{ color:  "#f97316"}} />
+            </button>
+          ) : (
+            <button
+            onClick={async() => {
+              await OnClose();
+              window.location.reload();
+            }}
+            >
+              <X size={24} style={{ color:  "#f97316"}}/> {/*Cross Icon And Action */}
+            </button>
+          )}
+          
         </div>
       </div>
     </>

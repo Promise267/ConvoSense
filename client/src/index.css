@@ -5,8 +5,6 @@
     background-image: linear-gradient(to right,#ec4899, #a855f7, #3b82f6);
     -webkit-background-clip: text;
     color: transparent;
-    padding: 10px; /* Adjust the padding as needed */
-    margin-left: 10px;
   }
 
 .bg-customGradient{
