@@ -3,7 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faMessage, faBell, faImage, faGear, faPlus, faRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import {NavLink, useNavigate} from 'react-router-dom';
 import ConveSenseImage from "../../assets/convoSense.png"
-
+import Cookie from "js-cookie"
+import axios from "axios"
+import { useDispatch } from "react-redux"
+import { persistor } from '../../redux/store';
 
 export default function Sidebar() {
     const initialState = [
@@ -15,6 +18,7 @@ export default function Sidebar() {
 
     const [icons, setIcons] = useState(initialState);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     useEffect(() => {
         const selectedIconIndex = localStorage.getItem('selectedIconIndex');
@@ -36,7 +40,28 @@ export default function Sidebar() {
         localStorage.setItem('selectedIconIndex', index);
     };
 
-    const handleLogout = () => {
+    function deleteCookie() {
+        // retrieve all cookies
+        var Cookies = document.cookie.split(';');
+        // set past expiry to all cookies
+        for (var i = 0; i < Cookies.length; i++) {
+        document.cookie = Cookies[i] + "=; expires="+ new Date(0).toUTCString();
+        }
+      }
+
+    const handleLogout = async() => {
+        try {
+            const result = await axios.delete("http://localhost:5000/deleteToken")
+            if(result){
+                deleteCookie();
+                console.log(result.data.redirect);
+                persistor.purge(['credential'], ['chatWindow']);
+                persistor.persist()
+                navigate(`${result.data.redirect}`);
+            }
+        } catch (error) {
+            console.log(error);
+        }
 
     }
 

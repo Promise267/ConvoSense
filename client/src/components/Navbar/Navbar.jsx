@@ -11,14 +11,8 @@ export default function Navbar() {
 
   const Links = [
     {
-      name : "Features", route : "/feature"
-    },
-    {
       name : "About", route : "/about"
-    },
-    {
-      name : "Contact", route : "/contact"
-    },
+    }
 ]
 
   return (

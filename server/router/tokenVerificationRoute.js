@@ -5,5 +5,6 @@ const tokenVerification = require("../middleware/token/tokenVerification")
 
 router.post("/sendToken", tokenVerification.generateToken);
 router.get("/verifyToken", authMiddleware, tokenVerification.verifyToken);
+router.delete("/deleteToken", tokenVerification.deleteToken)
 
 module.exports = router;

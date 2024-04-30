@@ -4,7 +4,7 @@ import authenticationSlice from "./authentication/authenticationSlice"
 import chatWindowSlice from "./chatWindow/chatWindowSlice"
 import cameraStatusSlice from "./cameraStatus/cameraStatusSlice"
 import storage from "redux-persist/lib/storage"
-import { persistReducer } from "redux-persist"
+import { persistReducer, persistStore } from "redux-persist";
 import { combineReducers } from "@reduxjs/toolkit"
 
 const persistConfig = {
@@ -27,3 +27,5 @@ export const store = configureStore({
         cameraStatus : cameraStatusSlice,
     }
 });
+
+export const persistor = persistStore(store);

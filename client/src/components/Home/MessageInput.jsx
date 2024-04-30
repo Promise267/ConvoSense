@@ -66,6 +66,7 @@ export default function MessageInput({ chatModelId, userId, sendMessage, socket 
     const updatedFiles = [...files];
     updatedFiles.splice(index, 1);
     setFiles(updatedFiles);
+    fileInputRef.current.value = null;
   };
 
   const handleKeyPress = (e) => {

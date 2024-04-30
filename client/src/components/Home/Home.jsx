@@ -24,7 +24,6 @@ export default function Home() {
   const getchatWindow = useSelector(state => state.persistReducedReducer.chatWindow);
   const isChatWindowEmpty = getchatWindow.chatModelId > 0;
   const getCredential = useSelector(state => state.persistReducedReducer.credential);
-  //console.log(`chatWindow : ${getchatWindow._id}`);
   const dispatch = useDispatch();
 
   const [friends, setFriends] = useState([]);

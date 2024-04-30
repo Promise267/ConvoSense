@@ -3,7 +3,7 @@ import ScrollToBottom from 'react-scroll-to-bottom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane, faVolumeHigh } from '@fortawesome/free-solid-svg-icons';
 
-export default function Message({ messages, userId, chatModelId, socket }) {
+export default function Message({ messages, userId, chatModelId, socket, firstName }) {
 
   const speakMessage = (text) => {
     const utterance = new SpeechSynthesisUtterance(text);
@@ -15,7 +15,7 @@ export default function Message({ messages, userId, chatModelId, socket }) {
       {messages.map((message, index) => {
         const isSentByUser = message.sender && message.sender._id === userId;
         const messageClass = isSentByUser ? 'text-right' : 'text-left';
-        const backgroundColor = isSentByUser ? 'bg-customGradient text-white' : 'bg-orange-500 text-gray-800';
+        const backgroundColor = isSentByUser ? 'bg-customGradient text-white' : 'bg-orange-500 text-white';
 
         // Parse createdAt timestamp
         const createdAt = new Date(message.createdAt);

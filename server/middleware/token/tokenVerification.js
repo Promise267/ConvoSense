@@ -30,8 +30,17 @@ const verifyToken = (req, res) =>{
       }
 }
 
+const deleteToken = (req, res) => {
+    console.log("Deleting token...");
+    return res.clearCookie("accessToken", {
+        httpsOnly: true,
+        path: "/home"
+    }).status(200).json({ message: 'Token deleted successfully', redirect: "/login" });
+}
+
 
 module.exports = {
     generateToken,
-    verifyToken
+    verifyToken,
+    deleteToken
 }

@@ -1,6 +1,4 @@
 const mongoose = require("mongoose");
-const User = require("../model/user")
-const ChatModel = require("../model/chatModel");
 
 const chatMessageSchema = mongoose.Schema({
     sender: {
@@ -9,8 +7,10 @@ const chatMessageSchema = mongoose.Schema({
         required : true
     },
     content : {
-        type : String,
-        required : true
+        type : String
+    },
+    image : {
+        type : Buffer
     },
     chatModel: {
         type : mongoose.Schema.Types.Mixed,

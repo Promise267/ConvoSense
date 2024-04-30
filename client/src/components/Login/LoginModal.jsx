@@ -4,8 +4,6 @@ import { addCredentials } from '../../redux/verification/credentialSlice';
 import { addToken } from '../../redux/authentication/authenticationSlice';
 import PhoneInput from "react-phone-input-2";
 import {ToastContainer, toast} from 'react-toastify';
-import {GoogleLoginButton} from "react-social-login-buttons"
-import {FacebookLoginButton} from "react-social-login-buttons"
 import { useDispatch, useSelector } from 'react-redux';
 import {NavLink, useNavigate} from 'react-router-dom';
 import FieldIndicators from "../Indicators/FieldIndicators"
@@ -122,12 +120,6 @@ export default function LoginModal() {
         </form>
         <hr className="mt-12 mb-12"/>
         <div className="flex flex-col space-x-4 mr-16">
-        <GoogleLoginButton onClick={() => alert("Hello")}>
-        <span className="text-sm ">Sign In With Google</span>
-        </GoogleLoginButton>
-        <FacebookLoginButton onClick={() => alert("Hello")}>
-        <span className="text-sm">Sign In With Facebook</span>
-        </FacebookLoginButton>
         </div>
         <div>
         <p className="text-sm font-light text-gray-500">Dont have an account? <span className="font-medium text-primary-600 hover:underline"><NavLink to="/register">Register</NavLink></span></p>
