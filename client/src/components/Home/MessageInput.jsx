@@ -1,12 +1,19 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPaperPlane, faPaperclip, faTimesCircle, faMicrophone } from '@fortawesome/free-solid-svg-icons';
+import Camera from './Camera';
+import { displayText } from '../../utilities/utilities';
+import { faPaperPlane, faPaperclip, faTimesCircle, faMicrophone, faCamera } from '@fortawesome/free-solid-svg-icons';
 
 export default function MessageInput({ chatModelId, userId, sendMessage, socket }) {
   const [message, setMessage] = useState('');
   const [isListening, setIsListening] = useState(false);
+  const [stream, setStream] = useState();
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef(null); // Define fileInputRef here
+
+  useEffect(() => {
+    setMessage(displayText)
+  },[displayText])
 
   const handleSendMessage = () => {
     if (message.trim() !== '') {
@@ -16,6 +23,7 @@ export default function MessageInput({ chatModelId, userId, sendMessage, socket 
       setFiles([]); // Clear selected files after sending message;
     }
   };
+
 
   const handleMicrophone = () => {
     const recognition = new window.webkitSpeechRecognition(); // Create a new SpeechRecognition instance
@@ -87,7 +95,7 @@ export default function MessageInput({ chatModelId, userId, sendMessage, socket 
             multiple // Allow multiple file selection
           />
           <button onClick={handleAttachedFile}>
-            <FontAwesomeIcon 
+            <FontAwesomeIcon
               icon={faPaperclip}
               size="2xl"
               style={{ color: "#9ca3af" }}
@@ -96,7 +104,7 @@ export default function MessageInput({ chatModelId, userId, sendMessage, socket 
         </div>
         <div className="flex-1 relative">
           {files.map((file, index) => (
-            <div 
+            <div
               key={index}
               className="inline-block relative mr-2 mt-2"
               style={{ width: "80px", height: "80px" }}

@@ -3,6 +3,7 @@ import axios from "axios"
 import { addCredentials } from '../../redux/verification/credentialSlice';
 import { addToken } from '../../redux/authentication/authenticationSlice';
 import PhoneInput from "react-phone-input-2";
+import {Link} from "react-router-dom"
 import {ToastContainer, toast} from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import {NavLink, useNavigate} from 'react-router-dom';
@@ -10,7 +11,7 @@ import FieldIndicators from "../Indicators/FieldIndicators"
 import 'react-toastify/dist/ReactToastify.css';
 
 
-export default function LoginModal() {
+export default function LoginModal(props) {
     const [dialCode, setDialCode] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
@@ -19,19 +20,23 @@ export default function LoginModal() {
     const dispatch = useDispatch();
     const getToken = useSelector(state => state.authentication)
 
-    const handleGetToken = async () => {
-        const url = `${import.meta.env.VITE_BACKEND_URI}/sendToken`;
-        try {
-            const result = await axios.post(url, { phoneNumber }, { withCredentials: true });
-            if (result) {
-                dispatch(addToken(
-                    { token : result.data.accessToken }));
-                navigate(`${result.data.redirect}`);
+
+
+
+    const sendVerificationCode = async() => {
+        const url = `${import.meta.env.VITE_BACKEND_URI}` + "/sendVerificationCode"
+        await axios.post(url, {phoneNumber,dialCode}).then((result) => {
+            if(result.status === 200){
+                console.log("Successfully sent");
             }
-        } catch (err) {
-            console.error(err);
-        }
-    };
+            else{
+                console.log("PhoneNumber was unable to be send");
+            }
+        }).catch((err) => {
+            console.log(err);
+        });
+
+    }
 
 
     const handleSubmit = async (e) => {
@@ -53,8 +58,10 @@ export default function LoginModal() {
                 dateofbirth: result.data.user.dateofbirth
             })
             );
+            setShowIndicator(false);
             // Await the dispatch operation before calling handleGetToken
-            await handleGetToken();
+            await sendVerificationCode();
+            props.onFormFillUpComplete();
         } catch (err) {
             toast.error(`${err.response.data.message}`);
         }
@@ -111,7 +118,7 @@ export default function LoginModal() {
             onChange={(e)=>{setPassword(e.target.value)}}
             />
         {showIndicator && <FieldIndicators text={password} />}
-        <button
+            <button
             className="w-5/6 mt-4  bg-orange-500 text-white font-medium py-2 px-4 rounded hover:opacity-75 hover:shadow-lg transition  duration-300 ease-in-out"
             type="submit"
             >

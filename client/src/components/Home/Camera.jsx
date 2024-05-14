@@ -15,7 +15,7 @@ export default function Camera(props) {
     // 3. TODO - Load network
     // e.g. const net = await cocossd.load();
     const net = await tf.loadGraphModel(
-      "https://convosensebucket.s3.amazonaws.com/model.json"
+      "https://convosenseapp.s3.amazonaws.com/model.json"
     );
 
     setInterval(() => {

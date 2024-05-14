@@ -45,7 +45,7 @@ export default function RegisterModal(props) {
             })
         }
 
-    const handleContinue = (e) => {
+    const handleContinue = async(e) => {
         e.preventDefault()
         if(
             creds.firstName !== "" &&
@@ -75,8 +75,17 @@ export default function RegisterModal(props) {
                     }
                     ))
                 setShowIndicator(false);
-                sendVerificationCode();
-                props.onFormFillUpComplete()
+                const url = `${import.meta.env.VITE_BACKEND_URI}` + "/user/findUser"
+                await axios.post(url, {dialCode, phoneNumber}).then((result) => {
+                    if(result.status === 200){
+                        sendVerificationCode();
+                        props.onFormFillUpComplete()
+                    }
+                }).catch((err) => {
+                    if (err.response && err.response.status === 409){
+                        toast.error(`${err.response.data.message}`);
+                    }
+                });
             }
         else{
             setShowIndicator(true)
@@ -96,7 +105,6 @@ export default function RegisterModal(props) {
         }).catch((err) => {
             console.log(err);
         });
-
     }
 
 

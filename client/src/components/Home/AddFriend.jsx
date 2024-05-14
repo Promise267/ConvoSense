@@ -19,6 +19,7 @@ export default function AddFriend({userId}) {
         console.log(result);
         toast.success(result.data.message)
         fetchSentChatRequest();
+        setSearchQuery("");
     } catch (err) {
       if (err.response.status === 409){
         toast.warn(err.response.data.message)

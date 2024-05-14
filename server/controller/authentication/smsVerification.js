@@ -25,20 +25,11 @@ const verifyCode = async(req, res) => {
     const {code, phoneNumber} = req.body
 
     if(code !== "", phoneNumber !== ""){
-        User.findOne({phoneNumber : phoneNumber}).then((result) => {
-            if(result){
-                return res.status(409).json({message : "User already exists"});
-            }
-            else{
-                if (parseInt(code) === verificationCode) {
-                    return res.status(200).json({ message: 'Verification successful'});
-                } else {
-                    return res.status(401).json({ message: 'Verification failed. Please try again.', actualCode : `${verificationCode}`, enteredCode : `${code}` });
-                }
-            }
-        }).catch((err) => {
-            console.log(err);
-        });
+        if (parseInt(code) === verificationCode) {
+            return res.status(200).json({ message: 'Verification successful'});
+        } else {
+            return res.status(401).json({ message: 'Verification failed. Please try again.', actualCode : `${verificationCode}`, enteredCode : `${code}` });
+        }
     }
     else{
         return res.status(403).json({message : "PhoneNumber or Code is missing"});

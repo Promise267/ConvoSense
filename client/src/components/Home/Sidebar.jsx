@@ -6,7 +6,6 @@ import ConveSenseImage from "../../assets/convoSense.png"
 import Cookie from "js-cookie"
 import axios from "axios"
 import { useDispatch } from "react-redux"
-import { persistor } from '../../redux/store';
 
 export default function Sidebar() {
     const initialState = [
@@ -54,9 +53,9 @@ export default function Sidebar() {
             const result = await axios.delete("http://localhost:5000/deleteToken")
             if(result){
                 deleteCookie();
-                console.log(result.data.redirect);
-                persistor.purge(['credential'], ['chatWindow']);
-                persistor.persist()
+                // console.log(result.data.redirect);
+                // persistor.purge(['credential'], ['chatWindow']);
+                // persistor.persist()
                 navigate(`${result.data.redirect}`);
             }
         } catch (error) {

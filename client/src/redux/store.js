@@ -27,5 +27,3 @@ export const store = configureStore({
         cameraStatus : cameraStatusSlice,
     }
 });
-
-export const persistor = persistStore(store);
