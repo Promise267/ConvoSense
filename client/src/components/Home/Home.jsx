@@ -90,10 +90,10 @@ export default function Home() {
   }
 
 
-  // useEffect(()=>{
-  //   if(!getTokenFromBrowser)
-  //   handleCookieValidity();
-  // },[getCredential.phoneNumber, getCredential.token, navigate, getToken])
+  useEffect(()=>{
+    if(!getTokenFromBrowser)
+    handleCookieValidity();
+  },[getCredential.phoneNumber, getCredential.token, navigate, getToken])
 
   useEffect(() => {
     const fetchUsers = () => {
