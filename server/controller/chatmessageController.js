@@ -38,5 +38,24 @@ module.exports = {
             console.log(err);
             res.status(500).json({ message: "Failed to fetch chat messages" });
         }
+    },
+
+    DELETEChatMessage : async(req, res) => {
+        const {chatmessageId} = req.body
+        const chatMessage = await ChatMessage.findById(chatmessageId)
+
+        if(!chatMessage){
+            return res.status(404).json({ message: "ChatMessage not found" });
+        }
+
+        ChatMessage.findByIdAndDelete(chatmessageId).then((result) => {
+            if(!result){
+                return res.status(404).json({ message: "Chat Message not found" });
+            }
+            res.status(200).json({ message: "Message deleted", request: chatMessage });
+        }).catch((err) => {
+            console.log(err);
+            res.status(500).json({ message: "Failed to delete chat message" });
+        });
     }
 }

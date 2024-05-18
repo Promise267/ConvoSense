@@ -21,7 +21,7 @@ const userSchema = mongoose.Schema({
     password: {
         type : String,
         required : true,
-        match : /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+}{":;?/.,<>]).{6,}$/ //minimum six letter, with atleast one capital letter, one special character and one integer
+        //match : /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+}{":;?/.,<>]).{6,}$/ //minimum six letter, with atleast one capital letter, one special character and one integer
     },
     dialCode: {
         type : String,

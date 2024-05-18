@@ -52,6 +52,7 @@ export default function Sidebar() {
         try {
             const result = await axios.delete("http://localhost:5000/deleteToken")
             if(result){
+                await localStorage.setItem("persist:root","");
                 deleteCookie();
                 // console.log(result.data.redirect);
                 // persistor.purge(['credential'], ['chatWindow']);

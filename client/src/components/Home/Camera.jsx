@@ -10,10 +10,7 @@ export default function Camera(props) {
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Main function
   const tensorModel = async () => {
-    // 3. TODO - Load network
-    // e.g. const net = await cocossd.load();
     const net = await tf.loadGraphModel(
       "https://convosenseapp.s3.amazonaws.com/model.json"
     );
@@ -44,7 +41,7 @@ export default function Camera(props) {
       canvasRef.current.width = videoWidth;
       canvasRef.current.height = videoHeight;
 
-      // 4. TODO - Make Detections
+      // Make Detections
       const img = tf.browser.fromPixels(video);
       const resized = tf.image.resizeBilinear(img, [videoHeight, videoWidth]);
       const casted = resized.cast("int32");
@@ -54,13 +51,13 @@ export default function Camera(props) {
         const obj = await net.executeAsync(expanded);
         //console.log(await obj[7].array());
 
-        //boxes is 7
-        //scores is 2
-        //classes is 5
+        //boxes tensor is 2
+        //classes tensor is 3
+        //scores tensor is 7
 
-        const boxes = await obj[7].array();
-        const classes = await obj[5].array();
-        const scores = await obj[2].array();
+        const boxes = await obj[2].array();
+        const classes = await obj[3].array();
+        const scores = await obj[7].array();
 
         // Draw mesh
         const ctx = canvasRef.current.getContext("2d");

@@ -1,15 +1,17 @@
 const User = require("../../model/user");
 const jwt = require("jsonwebtoken");
+const hashPassword = require("../../services/hashPassword");
 module.exports = {
     POST:(req, res)=>{
         const{firstName, lastName, gender, email, password, dialCode, phoneNumber, dateofbirth} = req.body
+        const hashedPassword = hashPassword(password)
 
         const newUser = new User({
             firstName,
             lastName,
             gender,
             email,
-            password,
+            password : hashedPassword,
             dialCode,
             phoneNumber,
             dateofbirth

@@ -8,7 +8,7 @@ export default function Notification({userId}) {
   const handleAcceptChatRequest = (id) => {
     try {
       axios.patch("http://localhost:5000/approve-chat-request", {chatrequestId : id, userId : userId}).then((result) => {
-        toast(result.data.message)
+        toast.success(result.data.message)
         fetchSentChatRequest()
       }).catch((err) => {
         console.log(err);

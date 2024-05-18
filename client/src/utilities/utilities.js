@@ -20,7 +20,7 @@ export const drawRect = (boxes, classes, scores, threshold, imgWidth, imgHeight,
     for(let i=0; i<boxes.length; i++){
         // console.log(boxes[i]);
         // console.log(classes[i]);
-        // console.log(scores[i]);
+        //console.log(scores[i]);
         if(boxes[i] && classes[i] && scores[i]>threshold){
             // Extract variables
             const [y,x,height,width] = boxes[i]
