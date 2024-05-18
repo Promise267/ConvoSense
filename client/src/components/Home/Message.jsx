@@ -65,9 +65,13 @@ export default function Message({ messages, userId, chatModelId, socket, firstNa
                     {message.content}
                   </div>
                   <div>
-                  <button onClick={() => handleDeleteMessage(message)}>
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
+                    {isSentByUser ? 
+                      <button onClick={() => handleDeleteMessage(message)}>
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    :
+                    <button></button>
+                  }
                   </div>
                 </div>
               </div>
