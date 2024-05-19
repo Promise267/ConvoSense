@@ -32,6 +32,7 @@ export default function RegisterModal(props) {
     const [dateofbirth, setDateofbirth] = useState(null)
     const [isChecked, setChecked] = useState(false)
     const [showIndicator, setShowIndicator] = useState(false)
+    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+}{":;?/.,<>]).{6,}$/
 
     const handleChange = (e) => {
         e.preventDefault();
@@ -58,34 +59,39 @@ export default function RegisterModal(props) {
             creds.confirmPassword !== "" &&
             isChecked == true
             ){
-                const dob = new Date(dateofbirth);
-                const dobFormatted = `${dob.getFullYear()}-${dob.getMonth() + 1}-${dob.getDate()}`;
-                dispatch(
-                    addCredentials({
-                        firstName : creds.firstName,
-                        lastName : creds.lastName,
-                        gender : creds.gender,
-                        email : creds.email,
-                        password : creds.password,
-                        confirmPassword : creds.confirmPassword,
-                        dialCode : dialCode,
-                        phoneNumber : phoneNumber,
-                        dateofbirth : dobFormatted,
-                        isChecked : isChecked
-                    }
-                    ))
-                setShowIndicator(false);
-                const url = `${import.meta.env.VITE_BACKEND_URI}` + "/user/findUser"
-                await axios.post(url, {dialCode, phoneNumber}).then((result) => {
-                    if(result.status === 200){
-                        sendVerificationCode();
-                        props.onFormFillUpComplete()
-                    }
-                }).catch((err) => {
-                    if (err.response && err.response.status === 409){
-                        toast.error(`${err.response.data.message}`);
-                    }
-                });
+                if (regex.test(creds.password)) {
+                    const dob = new Date(dateofbirth);
+                    const dobFormatted = `${dob.getFullYear()}-${dob.getMonth() + 1}-${dob.getDate()}`;
+                    dispatch(
+                        addCredentials({
+                            firstName : creds.firstName,
+                            lastName : creds.lastName,
+                            gender : creds.gender,
+                            email : creds.email,
+                            password : creds.password,
+                            confirmPassword : creds.confirmPassword,
+                            dialCode : dialCode,
+                            phoneNumber : phoneNumber,
+                            dateofbirth : dobFormatted,
+                            isChecked : isChecked
+                        }
+                        ))
+                    setShowIndicator(false);
+                    const url = `${import.meta.env.VITE_BACKEND_URI}` + "/user/findUser"
+                    await axios.post(url, {dialCode, phoneNumber}).then((result) => {
+                        if(result.status === 200){
+                            sendVerificationCode();
+                            props.onFormFillUpComplete()
+                        }
+                    }).catch((err) => {
+                        if (err.response && err.response.status === 409){
+                            toast.error(`${err.response.data.message}`);
+                        }
+                    });
+                }
+                else{
+                    toast.error("Password contain at least one uppercase letter, one digit, one special character, and be at least 6 characters long.");
+                }
             }
         else{
             setShowIndicator(true)
